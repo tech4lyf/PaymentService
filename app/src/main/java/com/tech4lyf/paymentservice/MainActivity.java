@@ -127,11 +127,11 @@ public class MainActivity extends AppCompatActivity {
                 {
                     Log.e("Yuvi",txt.substring(13));
                     try {
-                        JSONObject obj=new JSONObject(txt.substring(14));
-                        String amt=obj.getString("amount");
-                        Toast.makeText(MainActivity.this, "Amount"+amt, Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        JSONObject jsonObject = new JSONObject(txt.substring(13));
+
+                        Log.e("JSON",jsonObject.getString("amount"));
+                    }catch (JSONException err){
+                        Log.d("Error", err.toString());
                     }
 
                 }
