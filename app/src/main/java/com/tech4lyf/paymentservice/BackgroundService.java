@@ -47,7 +47,7 @@ public class BackgroundService extends Service {
 //                       Log.e("JSONRESP",jsonObject1.getString("resultInfo"));
 
                        JSONObject jsonObject2=new JSONObject(jsonObject1.getString("resultInfo"));
-                        Log.e("JSONRESP",jsonObject2.getString("resultStatus"));
+                        Log.e("JSONRESPONSE",jsonObject2.getString("resultStatus"));
                         String resp=jsonObject2.getString("resultStatus");
 
                         Log.e("TXNSTATUS",resp);
