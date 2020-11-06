@@ -3,6 +3,7 @@ package com.tech4lyf.paymentservice;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -26,6 +27,9 @@ public class QrActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr);
+
+
+        startService(new Intent(QrActivity.this, BackgroundService.class));
 
         imageView=(ImageView)findViewById(R.id.imgQR);
         String data = getIntent().getStringExtra("data");

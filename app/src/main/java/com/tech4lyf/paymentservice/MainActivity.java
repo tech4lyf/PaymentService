@@ -24,6 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnQR,btnStart,btnCas;
     private OkHttpClient client;
+
+    String amount;
+    public static float amt;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         client = new OkHttpClient();
         btnQR=(Button)findViewById(R.id.btnQR);
         btnStart=(Button)findViewById(R.id.btnStart);
+
+        amount="";
+        amt=0;
+
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -56,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 JSONParser jsonParser=new JSONParser();
-                JSONObject jsonObject=jsonParser.getJSONFromUrl("https://clients.tech4lyf.com/quicup/");
+                JSONObject jsonObject=jsonParser.getJSONFromUrl("https://clients.tech4lyf.com/quicup/?amount="+amt);
+                Log.e("HelloPrice","https://clients.tech4lyf.com/quicup/?amount="+amt);
 
                 try {
                     String test=jsonObject.getString("body");
@@ -125,17 +135,23 @@ public class MainActivity extends AppCompatActivity {
 
                 if(txt.contains("amount"))
                 {
-                    Log.e("Yuvi",txt.substring(13));
+                    String json=txt.substring(12);
+                    Log.e("Yuvi",json);
                     try {
-                        JSONObject jsonObject = new JSONObject(txt.substring(13));
+                        JSONObject jsonObject = new JSONObject(json);
 
-                        Log.e("JSON",jsonObject.getString("amount"));
+                        Log.e("JSON Amount",jsonObject.getString("amount"));
+
+                        amount=jsonObject.getString("amount");
+                        amt=Float.parseFloat(amount);
+                        amt=amt/100;
+                        Log.e("HelloPrice",""+amt);
                     }catch (JSONException err){
                         Log.d("Error", err.toString());
                     }
 
-                }
+                        }
+                    }
+                });
             }
-        });
-    }
-}
+        }

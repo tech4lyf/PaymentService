@@ -23,6 +23,9 @@ public class PayActivity extends AppCompatActivity {
 
     OkHttpClient client;
     ImageButton imgBtnCash,imgBtnScan;
+    String amount;
+    float amt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +33,10 @@ public class PayActivity extends AppCompatActivity {
         client = new OkHttpClient();
         imgBtnCash=(ImageButton)findViewById(R.id.imgBtnCash);
         imgBtnScan=(ImageButton)findViewById(R.id.imgBtnScan);
+
+        amount="";
+
+        amt=MainActivity.amt;
         start();
 
 
@@ -37,7 +44,7 @@ public class PayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 JSONParser jsonParser=new JSONParser();
-                JSONObject jsonObject=jsonParser.getJSONFromUrl("https://clients.tech4lyf.com/quicup/");
+                JSONObject jsonObject=jsonParser.getJSONFromUrl("https://clients.tech4lyf.com/quicup/?amount="+amt);
 
                 try {
                     String test=jsonObject.getString("body");
@@ -50,7 +57,7 @@ public class PayActivity extends AppCompatActivity {
 
                     Log.d("Test", obj.toString());
 
-                    String temp=obj.getString("amount");
+//                    String temp=obj.getString("amount");
 
                     Intent actQr=new Intent(PayActivity.this,QrActivity.class);
                     actQr.putExtra("data",test);
