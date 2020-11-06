@@ -8,15 +8,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class QrActivity extends AppCompatActivity {
 
@@ -28,8 +32,20 @@ public class QrActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr);
 
+//        Intent serviceIntent = new Intent(BackgroundService.class.getName());
+//        serviceIntent.putExtra("OID", );
+//        this.startService(serviceIntent);
+//        startService(new Intent(QrActivity.this, BackgroundService.class));
 
-        startService(new Intent(QrActivity.this, BackgroundService.class));
+
+        Handler handler = new Handler();
+
+//        handler.postDelayed(new Runnable() {
+//            public void run() {
+//                finish();
+//            }
+//        }, 10000);
+
 
         imageView=(ImageView)findViewById(R.id.imgQR);
         String data = getIntent().getStringExtra("data");
@@ -41,7 +57,20 @@ public class QrActivity extends AppCompatActivity {
             Log.d("Test", obj.toString());
 
             qrData=obj.getString("image");
+            String qrDataUPI=obj.getString("qrData");
             Log.e("QR",qrData);
+            Log.e("QRData",qrDataUPI);
+
+//            String OID="";
+//
+//            OID= StringUtils.substringBetween(qrDataUPI, "&tr=","&cu=");
+//
+//            OID=OID.substring(0,15);
+//            Log.e("OID",OID);
+
+//            Intent serviceIntent = new Intent(BackgroundService.class.getName());
+//            serviceIntent.putExtra("OID",OID );
+//            this.startService(serviceIntent);
 
         } catch (Throwable t) {
             Log.e("Test", "Could not parse malformed JSON: \"" +data + "\"");
@@ -49,7 +78,7 @@ public class QrActivity extends AppCompatActivity {
 
 
 
-        Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
 
         data = java.net.URLDecoder.decode(qrData);
 

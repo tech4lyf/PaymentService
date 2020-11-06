@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,8 +51,16 @@ public class PayActivity extends AppCompatActivity {
                     String test=jsonObject.getString("body");
                     Log.e("Response",test);
 
+                    String OID="";
 
+                    OID= StringUtils.substringBetween(test, "&tr=","&cu=");
 
+                    OID=OID.substring(0,15);
+                    Log.e("OID",OID);
+
+                    Intent i = new Intent(getApplicationContext(),BackgroundService.class);
+                    i.putExtra("OID", OID);
+                    startService(i);
 
                     JSONObject obj = new JSONObject(test);
 
@@ -122,7 +131,7 @@ public class PayActivity extends AppCompatActivity {
             @Override
             public void run() {
 //                output.setText(output.getText().toString() + "\n\n" + txt);
-              Toast.makeText(PayActivity.this, txt, Toast.LENGTH_SHORT).show();
+//              Toast.makeText(PayActivity.this, txt, Toast.LENGTH_SHORT).show();
 
 
 

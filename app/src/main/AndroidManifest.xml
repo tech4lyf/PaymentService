@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PayActivity"></activity>
+        <activity android:name=".FailedActivity"></activity>
+        <activity android:name=".SuccessActivity" />
+        <activity android:name=".PayActivity" />
         <activity android:name=".QrActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -21,8 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".BackgroundService"/>
 
+        <service android:name=".BackgroundService" />
     </application>
 
 </manifest>
