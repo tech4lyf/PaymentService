@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnQR,btnStart,btnCas;
     private OkHttpClient client;
 
-    String amount;
+    public static String amount,orderno,id;
     public static float amt;
 
 
@@ -44,6 +44,25 @@ public class MainActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
+        }
+        try {
+            Thread.sleep(2000);
+            start();
+//            Thread.sleep(2000);
+  //          finish();
+            Thread.sleep(2000);
+            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("org.qtproject.example.venduid");
+            if (launchIntent != null) {
+                startActivity(launchIntent);
+
+               // System.exit(0);
+            } else {
+                Toast.makeText(getApplicationContext(), "There is no package available in android", Toast.LENGTH_LONG).show();
+            }
+        }
+        catch (Exception ex)
+        {
+            Toast.makeText(MainActivity.this, "Exception: "+ex.toString(), Toast.LENGTH_SHORT).show();
         }
 
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +147,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if(txt.contains("VendWaitForCredit"))
                 {
-                    Toast.makeText(MainActivity.this, "Open QR", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Open QR"+amt, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this,PayActivity.class);
+                    intent.putExtra("amt",String.valueOf(amt));
                     startActivity(intent);
                 }
 
@@ -143,7 +163,10 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("JSON Amount",jsonObject.getString("amount"));
 
                         amount=jsonObject.getString("amount");
+                        orderno=jsonObject.getString("order_no");
+                        id=jsonObject.getString("id");
                         amt=Float.parseFloat(amount);
+
                         amt=amt/100;
                         Log.e("HelloPrice",""+amt);
                     }catch (JSONException err){

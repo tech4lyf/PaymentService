@@ -40,11 +40,19 @@ public class QrActivity extends AppCompatActivity {
 
         Handler handler = new Handler();
 
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
+        handler.postDelayed(new Runnable () {
+            public void run() {
 //                finish();
-//            }
-//        }, 10000);
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("org.qtproject.example.venduid");
+                if (launchIntent != null) {
+                    startActivity(launchIntent);
+
+                    // System.exit(0);
+                } else {
+                    Toast.makeText(getApplicationContext(), "There is no package available in android", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, 60000);
 
 
         imageView=(ImageView)findViewById(R.id.imgQR);

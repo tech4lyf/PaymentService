@@ -55,17 +55,56 @@ public class BackgroundService extends Service {
                         {
                             Intent actSuccess=new Intent(context,SuccessActivity.class);
                             actSuccess.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            actSuccess.putExtra("cmd", "{\n" +
+                                    "\t\t\"channel\":\"wx_pub_qr\",\n" +
+                                    "\t\t\"order_no\":\"" +MainActivity.orderno + "\",\n" +
+                                    "\t\t\"id\":\"" +MainActivity.id + "\",\n" +
+                                    "\t\t\"paid\":true,\n" +
+                                    "\t\t\"amount\":\"1\",\n" +
+                                    "\t\t\"cmd\":\"webhook\"\n" +
+                                    "\t}");
                             startActivity(actSuccess);
+//
+//                            BackgroundService.this.stopSelf();
 
-                            BackgroundService.this.stopSelf();
+//                            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.tech4lyf.success");
+//                            launchIntent.putExtra("status","SUCCESS");
+//                            launchIntent.putExtra("orderno",MainActivity.orderno);
+//                            launchIntent.putExtra("id",MainActivity.id);
+//                            launchIntent.putExtra("amount",String.valueOf(MainActivity.amt));
+
+//                            launchIntent.putExtra("cmd", "{\n" +
+//                                    "\t\t\"channel\":\"wx_pub_qr\",\n" +
+//                                    "\t\t\"order_no\":\"" +MainActivity.orderno + "\",\n" +
+//                                    "\t\t\"id\":\"" +MainActivity.id + "\",\n" +
+//                                    "\t\t\"paid\":true,\n" +
+//                                    "\t\t\"amount\":\"1\",\n" +
+//                                    "\t\t\"cmd\":\"webhook\"\n" +
+//                                    "\t}");
+//
+//                            if (launchIntent != null) {
+//                                startActivity(launchIntent);
+//
+//                                System.exit(0);
+//                            } else {
+//                                Toast.makeText(context, "There is no package available in android", Toast.LENGTH_LONG).show();
+//                            }
+
                         }
 
                         else if(resp.equals("TXN_FAILURE"))
                         {
-                            Intent actFailure=new Intent(context,FailedActivity.class);
-                            actFailure.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(actFailure);
-                            BackgroundService.this.stopSelf();
+                            Intent actSuccess=new Intent(context,FailedActivity.class);
+                            actSuccess.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            actSuccess.putExtra("cmd", "{\n" +
+                                    "\t\t\"channel\":\"wx_pub_qr\",\n" +
+                                    "\t\t\"order_no\":\"" +MainActivity.orderno + "\",\n" +
+                                    "\t\t\"id\":\"" +MainActivity.id + "\",\n" +
+                                    "\t\t\"paid\":false,\n" +
+                                    "\t\t\"amount\":\"1\",\n" +
+                                    "\t\t\"cmd\":\"webhook\"\n" +
+                                    "\t}");
+                            startActivity(actSuccess);
                         }
 
                     }catch (JSONException err){
@@ -87,7 +126,7 @@ public class BackgroundService extends Service {
     @Override
     public void onDestroy() {
         /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
-        //handler.removeCallbacks(runnable);
+        handler.removeCallbacks(runnable);
         Toast.makeText(this, "Service stopped", Toast.LENGTH_LONG).show();
     }
 

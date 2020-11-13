@@ -6,14 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".QrActivity">
 
-    <ImageView
-        android:id="@+id/imgQR"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:scaleType="fitCenter"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_image_24" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgQR"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_baseline_image_24" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/upiapps" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

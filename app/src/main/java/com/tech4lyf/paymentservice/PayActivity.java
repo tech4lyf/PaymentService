@@ -2,10 +2,13 @@ package com.tech4lyf.paymentservice;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -27,54 +30,56 @@ public class PayActivity extends AppCompatActivity {
     String amount;
     float amt;
 
+    ProgressDialog progressDialog;
+    Button btnClose;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay);
         client = new OkHttpClient();
-        imgBtnCash=(ImageButton)findViewById(R.id.imgBtnCash);
-        imgBtnScan=(ImageButton)findViewById(R.id.imgBtnScan);
+        imgBtnCash = (ImageButton) findViewById(R.id.imgBtnCash);
+        imgBtnScan = (ImageButton) findViewById(R.id.imgBtnScan);
 
-        amount="";
+        progressDialog = new ProgressDialog(this);
 
-        amt=MainActivity.amt;
+        btnClose = (Button) findViewById(R.id.btnClose);
+
+        amount = "";
+
+//        amt=MainActivity.amt;
+        Intent intent = getIntent();
+        intent.getExtras();
+        if (intent != null)
+        {
+
+            String a=intent.getStringExtra("amt");
+            amt=Float.parseFloat(a);
+
+
+        }
         start();
 
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("org.qtproject.example.venduid");
+                if (launchIntent != null) {
+                    startActivity(launchIntent);
+
+                    // System.exit(0);
+                } else {
+                    Toast.makeText(getApplicationContext(), "There is no package available in android", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         imgBtnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONParser jsonParser=new JSONParser();
-                JSONObject jsonObject=jsonParser.getJSONFromUrl("https://clients.tech4lyf.com/quicup/?amount="+amt);
 
-                try {
-                    String test=jsonObject.getString("body");
-                    Log.e("Response",test);
+        new DownloadJSONFileAsync().execute();
 
-                    String OID="";
-
-                    OID= StringUtils.substringBetween(test, "&tr=","&cu=");
-
-                    OID=OID.substring(0,15);
-                    Log.e("OID",OID);
-
-                    Intent i = new Intent(getApplicationContext(),BackgroundService.class);
-                    i.putExtra("OID", OID);
-                    startService(i);
-
-                    JSONObject obj = new JSONObject(test);
-
-                    Log.d("Test", obj.toString());
-
-//                    String temp=obj.getString("amount");
-
-                    Intent actQr=new Intent(PayActivity.this,QrActivity.class);
-                    actQr.putExtra("data",test);
-                    startActivity(actQr);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
             }
         });
@@ -83,9 +88,72 @@ public class PayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(PayActivity.this, "Please wait...", Toast.LENGTH_SHORT).show();
-                finish();
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("org.qtproject.example.venduid");
+                if (launchIntent != null) {
+                    startActivity(launchIntent);
+
+                    // System.exit(0);
+                } else {
+                    Toast.makeText(getApplicationContext(), "There is no package available in android", Toast.LENGTH_LONG).show();
+                }
             }
         });
+
+
+
+    }
+
+    public class DownloadJSONFileAsync extends AsyncTask<String, Void, Void> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setMessage("Loading");
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            JSONParser jsonParser=new JSONParser();
+            JSONObject jsonObject=jsonParser.getJSONFromUrl("https://clients.tech4lyf.com/quicup/?amount="+amt);
+
+            amt=0;
+            MainActivity.amt=0;
+            try {
+                String test=jsonObject.getString("body");
+                Log.e("Response",test);
+                String OID="";
+                OID= StringUtils.substringBetween(test, "&tr=","&cu=");
+                OID=OID.substring(0,15);
+                Log.e("OID",OID);
+                Intent i = new Intent(getApplicationContext(),BackgroundService.class);
+                i.putExtra("OID", OID);
+                startService(i);
+
+                JSONObject obj = new JSONObject(test);
+
+                Log.d("Test", obj.toString());
+
+//                    String temp=obj.getString("amount");
+
+                Intent actQr=new Intent(PayActivity.this,QrActivity.class);
+                Log.e("QRData",test);
+                actQr.putExtra("data",test);
+                startActivity(actQr);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(Void unused) {
+
+
+        }
+
+
     }
 
     private final class EchoWebSocketListener extends WebSocketListener {
@@ -137,13 +205,13 @@ public class PayActivity extends AppCompatActivity {
 
                 if(txt.contains("VendWaitForCredit"))
                 {
-                    Toast.makeText(PayActivity.this, "Open QR", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PayActivity.this, "Open QR"+amt, Toast.LENGTH_SHORT).show();
 //                    Intent intent = new Intent(PayActivity.this,PayActivity.class);
 //                    startActivity(intent);
                 }
             }
         });
-    }
+    } 
 
 
 }
