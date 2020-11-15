@@ -54,7 +54,6 @@ public class FailedActivity extends AppCompatActivity {
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
             webSocket.send(cmd);
-
         }
         @Override
         public void onMessage(WebSocket webSocket, String text) {

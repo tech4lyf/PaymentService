@@ -2,9 +2,8 @@ package com.tech4lyf.paymentservice;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,38 +26,19 @@ public class PayActivity extends AppCompatActivity {
 
     OkHttpClient client;
     ImageButton imgBtnCash,imgBtnScan;
+    Button btnClose;
     String amount;
     float amt;
-
-    ProgressDialog progressDialog;
-    Button btnClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay);
         client = new OkHttpClient();
-        imgBtnCash = (ImageButton) findViewById(R.id.imgBtnCash);
-        imgBtnScan = (ImageButton) findViewById(R.id.imgBtnScan);
+        imgBtnCash=(ImageButton)findViewById(R.id.imgBtnCash);
+        imgBtnScan=(ImageButton)findViewById(R.id.imgBtnScan);
 
-        progressDialog = new ProgressDialog(this);
-
-        btnClose = (Button) findViewById(R.id.btnClose);
-
-        amount = "";
-
-//        amt=MainActivity.amt;
-        Intent intent = getIntent();
-        intent.getExtras();
-        if (intent != null)
-        {
-
-            String a=intent.getStringExtra("amt");
-            amt=Float.parseFloat(a);
-
-
-        }
-        start();
+        btnClose=(Button)findViewById(R.id.btnClose);
 
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,12 +54,60 @@ public class PayActivity extends AppCompatActivity {
             }
         });
 
+        Intent intent=getIntent();
+        if(intent.getExtras()!=null) {
+            Toast.makeText(this, "Tested Amt : " + intent.getStringExtra("amt"), Toast.LENGTH_SHORT).show();
+            amt=Float.parseFloat(intent.getStringExtra("amt"));
+
+            amt=amt/100;
+
+            Toast.makeText(this, "Tested Amt1 : " + amt, Toast.LENGTH_SHORT).show();
+        }
+
+        SharedPreferences prefs = getSharedPreferences("QUICUPTMP", MODE_PRIVATE);
+        Float amt1 = prefs.getFloat("amt", 0f);//"No name defined" is the default value.
+        Toast.makeText(this, "SPAmt"+amt1, Toast.LENGTH_SHORT).show();
+//        int idName = prefs.getInt("idName", 0); //0 is the default value.
+//
+//        amount="";
+//        amt=MainActivity.amt;
+        start();
+
+
         imgBtnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                JSONParser jsonParser=new JSONParser();
+                JSONObject jsonObject=jsonParser.getJSONFromUrl("https://clients.tech4lyf.com/quicup/?amount="+amt);
 
-        new DownloadJSONFileAsync().execute();
+                try {
+                    String test=jsonObject.getString("body");
+                    Log.e("Response",test);
 
+                    String OID="";
+
+                    OID= StringUtils.substringBetween(test, "&tr=","&cu=");
+
+                    OID=OID.substring(0,15);
+                    Log.e("OID",OID);
+
+                    Intent i = new Intent(getApplicationContext(),BackgroundService.class);
+                    i.putExtra("OID", OID);
+                    startService(i);
+
+                    JSONObject obj = new JSONObject(test);
+
+                    Log.d("Test", obj.toString());
+
+//                    String temp=obj.getString("amount");
+
+                    Intent actQr=new Intent(PayActivity.this,QrActivity.class);
+                    actQr.putExtra("data",test);
+                    startActivity(actQr);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -88,72 +116,9 @@ public class PayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(PayActivity.this, "Please wait...", Toast.LENGTH_SHORT).show();
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("org.qtproject.example.venduid");
-                if (launchIntent != null) {
-                    startActivity(launchIntent);
-
-                    // System.exit(0);
-                } else {
-                    Toast.makeText(getApplicationContext(), "There is no package available in android", Toast.LENGTH_LONG).show();
-                }
+                finish();
             }
         });
-
-
-
-    }
-
-    public class DownloadJSONFileAsync extends AsyncTask<String, Void, Void> {
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog.setMessage("Loading");
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            // TODO Auto-generated method stub
-            JSONParser jsonParser=new JSONParser();
-            JSONObject jsonObject=jsonParser.getJSONFromUrl("https://clients.tech4lyf.com/quicup/?amount="+amt);
-
-            amt=0;
-            MainActivity.amt=0;
-            try {
-                String test=jsonObject.getString("body");
-                Log.e("Response",test);
-                String OID="";
-                OID= StringUtils.substringBetween(test, "&tr=","&cu=");
-                OID=OID.substring(0,15);
-                Log.e("OID",OID);
-                Intent i = new Intent(getApplicationContext(),BackgroundService.class);
-                i.putExtra("OID", OID);
-                startService(i);
-
-                JSONObject obj = new JSONObject(test);
-
-                Log.d("Test", obj.toString());
-
-//                    String temp=obj.getString("amount");
-
-                Intent actQr=new Intent(PayActivity.this,QrActivity.class);
-                Log.e("QRData",test);
-                actQr.putExtra("data",test);
-                startActivity(actQr);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        protected void onPostExecute(Void unused) {
-
-
-        }
-
-
     }
 
     private final class EchoWebSocketListener extends WebSocketListener {
@@ -205,13 +170,13 @@ public class PayActivity extends AppCompatActivity {
 
                 if(txt.contains("VendWaitForCredit"))
                 {
-                    Toast.makeText(PayActivity.this, "Open QR"+amt, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(PayActivity.this, "Open QR", Toast.LENGTH_SHORT).show();
 //                    Intent intent = new Intent(PayActivity.this,PayActivity.class);
 //                    startActivity(intent);
                 }
             }
         });
-    } 
+    }
 
 
 }

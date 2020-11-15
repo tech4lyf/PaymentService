@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ public class QrActivity extends AppCompatActivity {
 
     ImageView imageView;
     String qrData="";
+    Button btnClose;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,21 @@ public class QrActivity extends AppCompatActivity {
 //        this.startService(serviceIntent);
 //        startService(new Intent(QrActivity.this, BackgroundService.class));
 
+        btnClose=(Button)findViewById(R.id.btnClose);
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("org.qtproject.example.venduid");
+                if (launchIntent != null) {
+                    startActivity(launchIntent);
+
+                    // System.exit(0);
+                } else {
+                    Toast.makeText(getApplicationContext(), "There is no package available in android", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         Handler handler = new Handler();
 

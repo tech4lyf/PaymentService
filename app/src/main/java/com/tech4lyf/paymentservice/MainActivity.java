@@ -3,6 +3,7 @@ package com.tech4lyf.paymentservice;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public static String amount,orderno,id;
     public static float amt;
 
+    JSONObject jsonObject1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         client = new OkHttpClient();
         btnQR=(Button)findViewById(R.id.btnQR);
         btnStart=(Button)findViewById(R.id.btnStart);
-
+        client = new OkHttpClient();
         amount="";
         amt=0;
 
@@ -148,8 +150,25 @@ public class MainActivity extends AppCompatActivity {
                 if(txt.contains("VendWaitForCredit"))
                 {
                     Toast.makeText(MainActivity.this, "Open QR"+amt, Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = getSharedPreferences("QUICUPTMP", MODE_PRIVATE).edit();
+                    editor.putFloat("amt",amt);
+                    editor.apply();
+
                     Intent intent = new Intent(MainActivity.this,PayActivity.class);
-                    intent.putExtra("amt",String.valueOf(amt));
+                    try {
+                        intent.putExtra("amt",jsonObject1.getString("amount"));
+                        amount=jsonObject1.getString("amount");
+                        orderno=jsonObject1.getString("order_no");
+                        Toast.makeText(MainActivity.this, "Order:"+orderno, Toast.LENGTH_SHORT).show();
+
+                        JSONObject jsonObject2=new JSONObject(jsonObject1.getString("app"));
+                        id=jsonObject2.getString("id");
+                        Toast.makeText(MainActivity.this, "Order:"+id, Toast.LENGTH_SHORT).show();
+                        amt=Float.parseFloat(amount);
+                        amt=amt/100;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     startActivity(intent);
                 }
 
@@ -160,14 +179,10 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(json);
 
-                        Log.e("JSON Amount",jsonObject.getString("amount"));
+                        Log.e("RS",jsonObject.getString("request_string"));
+                       jsonObject1 =new JSONObject(jsonObject.getString("request_string"));
+                        Log.e("QCAmount",jsonObject1.getString("amount"));
 
-                        amount=jsonObject.getString("amount");
-                        orderno=jsonObject.getString("order_no");
-                        id=jsonObject.getString("id");
-                        amt=Float.parseFloat(amount);
-
-                        amt=amt/100;
                         Log.e("HelloPrice",""+amt);
                     }catch (JSONException err){
                         Log.d("Error", err.toString());

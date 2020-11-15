@@ -29,7 +29,7 @@
 
         <LinearLayout
             android:layout_width="729dp"
-            android:layout_height="350dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
             android:layout_marginLeft="1dp"
             android:layout_marginTop="1dp"
@@ -42,11 +42,11 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     app:cardUseCompatPadding="true">
 
                     <LinearLayout
@@ -76,13 +76,13 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     app:cardUseCompatPadding="true">
 
                     <LinearLayout
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
                         android:gravity="center"
                         android:orientation="vertical">
 

@@ -29,6 +29,7 @@ public class SuccessActivity extends AppCompatActivity {
         if(intent.getExtras()!=null)
         {
             cmd=intent.getStringExtra("cmd");
+            Toast.makeText(this, ""+cmd, Toast.LENGTH_SHORT).show();
         }
         start();
         Handler handler = new Handler();

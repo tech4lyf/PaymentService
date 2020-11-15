@@ -58,7 +58,7 @@ public class BackgroundService extends Service {
                             actSuccess.putExtra("cmd", "{\n" +
                                     "\t\t\"channel\":\"wx_pub_qr\",\n" +
                                     "\t\t\"order_no\":\"" +MainActivity.orderno + "\",\n" +
-                                    "\t\t\"id\":\"" +MainActivity.id + "\",\n" +
+                                    "\t\t\"id\":\"" +000001 + "\",\n" +
                                     "\t\t\"paid\":true,\n" +
                                     "\t\t\"amount\":\"1\",\n" +
                                     "\t\t\"cmd\":\"webhook\"\n" +
